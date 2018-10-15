@@ -1,0 +1,261 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Connie Lemke and Brooklynn Hauck-->
+<html>
+<head>
+<title>Chutes and Ladders</title>
+<script>
+function RandomInt(low, high)<!--allows the die to roll randomly -->
+{
+  return Math.floor(Math.random()*(high-low+1)+low);
+}
+
+function startUp()<!--begins the game with the player one to start and its image above the die and player two below, both starting in location 0, off the board -->
+{
+	 player1Image = "player1Image1.jpg";
+	 player2Image = "player2Image1.jpg";
+	 // set up for player1's turn
+	 document.getElementById('PlayerImage').src = player1Image;
+	 document.getElementById('PlayerText').value = 1;
+	 document.getElementById('NextImage').src = player2Image;
+	 player1Loc = 0;
+	 player2Loc = 0;
+	 gameOver = false;
+}
+
+function rollAndMove() <!--the function that rolls the die by switching the image to one of the six available die images randomly by calling the RandomInt function from 1 to 6 and setting the parameter of move to the results of the random roll -->
+{
+  var roll;
+	if (!gameOver){
+  	roll = RandomInt(1,6);
+  	document.getElementById('dieImage').src = 
+  	           "http://balance3e.com/Images/die" + roll + ".gif";
+  	move(roll);
+		}
+}
+<!-- this function causes the nextLoc for the currentPlayer to advance for ladder and decend on the chutes -->
+function adjustForSlideOrLadder(nextLoc,currentLoc)
+{	 
+	if (nextLoc == 1) 
+		return 22; 
+	else if (nextLoc == 4) 
+		return 13; 
+	else if (nextLoc == 8) 
+		return 28; 
+	else if (nextLoc == 24) 
+		return 7; 
+	else if (nextLoc == 25) 
+		return 70; 
+	else if (nextLoc == 32) 
+		return 3; 
+	else if (nextLoc == 35) 
+		return 39; 
+	else if (nextLoc == 36) 
+		return 17; 
+	else if (nextLoc == 46) 
+		return 65; 
+	else if (nextLoc == 55) 
+		return 37; 
+	else if (nextLoc == 56) 
+		return 72; 
+	else if (nextLoc == 75) 
+		return 38; 
+	else if (nextLoc == 77) 
+		return 49; 
+	else if (nextLoc == 80) 
+		return 30;
+	else 
+		return nextLoc;
+}
+
+function move(places) <!--this function moves the current player in relation to their roll by placing their image in the cell associated with the roll in relation to their current position -->
+{
+	currentPlayerNum = document.getElementById('PlayerText').innerHTML;
+	currentPlayer = document.getElementById('PlayerImage').src;
+	currentLoc = findOnBoard(currentPlayer);
+	thisCell = "cell" + currentLoc;
+	thisCellImg = currentLoc + ".jpg";
+	nextLoc = currentLoc + places;
+	if (nextLoc < 81) <!-- moves player if the location is less than 81 with adjusting for chutes and laders -->
+	{
+     nextLoc = adjustForSlideOrLadder(nextLoc,currentLoc);
+		 nextCell = "cell" + nextLoc;
+	   if (document.getElementById(nextCell).src == document.getElementById('NextImage').src) <!-- if the other player occupies the location the currentPlayer rolled on, it will alert the player and their turn will be skipped-->
+	   {
+				alert('The other player has blocked this move');
+		 }
+		 else <!-- if the location is unoccupied the player can advance --> 
+		 { 
+				document.getElementById(nextCell).src = currentPlayer;
+				if (currentLoc > 0)
+           document.getElementById(thisCell).src = thisCellImg;
+		 }
+	}
+<!-- if the nextLoc for the Current player is exactly on 81 it will alert the player that they have wonand call for the victory dance function --> 
+	else if (nextLoc == 81) {
+		alert('Winner!');
+        document.getElementById(thisCell).src = thisCellImg;
+		victoryDance(currentPlayer);
+		gameOver = true;   
+	}
+	<!--calls switch player function from the currentPlayer  --> 
+  switchPlayers(currentPlayerNum);
+}
+
+function switchPlayers(currentPlayerNum)	<!-- this function basically switches the players after every turn --> 
+{
+	if (currentPlayerNum == 1){
+	  document.getElementById('PlayerText').innerHTML = 2;
+		document.getElementById('PlayerImage').src = player2Image;
+		document.getElementById('NextImage').src = player1Image;
+		}
+	else {
+	  document.getElementById('PlayerText').innerHTML = 1;
+		document.getElementById('PlayerImage').src = player1Image;
+		document.getElementById('NextImage').src = player2Image;
+		}
+}
+
+function findOnBoard(currentPlayer)	<!-- this function finds the player on the board by going through incrementing through each cell until the currentPlaye ris found --> 
+{
+	var i = 1;
+	var current_cell;
+  for (i; i < 82; i++) {
+	current_cell = 'cell' + i;
+	if (document.getElementById(current_cell).src == currentPlayer)
+		return i; 
+  }
+	return 0;
+}
+
+		
+		
+
+function victoryDance(currentPlayer)	<!-- places the winners image in cells 1,21,41,61, and 81 --> 
+{
+  var i = [1,2,3,4]
+  for (i = 1; i < 82; i += 20) {
+	currentCell = 'cell' + i;
+	document.getElementById(currentCell).src = currentPlayer;
+	}
+}
+
+</script>
+</head>
+<body onload="startUp();"> <!-- onload calls the startUp function which resets the game to begin with player one and its picture to be above the die image -->
+<h1>Chutes (Snakes) and Ladders</h1><!-- the heading for the name of the game-->
+<table summary="game board" cellpadding="0" cellspacing="0">
+<tr> <!-- the board which consist of the cell images-->
+<td><img id="cell73" src="73.jpg" alt="73" height="66" width="66"></td>
+<td><img id="cell74" src="74.jpg" alt="74" height="66" width="66"></td>
+<td><img id="cell75" src="75.jpg" alt="75" height="66" width="66"></td>
+<td><img id="cell76" src="76.jpg" alt="76" height="66" width="66"></td>
+<td><img id="cell77" src="77.jpg" alt="77" height="66" width="66"></td>
+<td><img id="cell78" src="78.jpg" alt="78" height="66" width="66"></td>
+<td><img id="cell79" src="79.jpg" alt="79" height="66" width="66"></td>
+<td><img id="cell80" src="80.jpg" alt="80" height="66" width="66"></td>
+<td><img id="cell81" src="81.jpg" alt="81" height="66" width="66"></td>
+<td rowspan="9" valign="center" align="center">
+<h2>Control Panel</h2>
+<h3>Up Now</h3>
+<h4>Player <span id="PlayerText">1</span></h4>
+<p><img id="PlayerImage" src="player1Image1.jpg" alt=""></p>
+<p>
+<img src="http://balance3e.com/Images/die1.gif" alt="click to roll"
+   id="dieImage" onclick="rollAndMove();">
+<br><i>Click to roll</i></p>
+<h3>Up Next</h3>
+<p><img id="NextImage" src="player2Image1.jpg" alt=""></p>
+</td>
+</tr>
+<tr>
+<td><img id="cell72" src="72.jpg" alt="72" height="66" width="66"></td>
+<td><img id="cell71" src="71.jpg" alt="71" height="66" width="66"></td>
+<td><img id="cell70" src="70.jpg" alt="70" height="66" width="66"></td>
+<td><img id="cell69" src="69.jpg" alt="69" height="66" width="66"></td>
+<td><img id="cell68" src="68.jpg" alt="68" height="66" width="66"></td>
+<td><img id="cell67" src="67.jpg" alt="67" height="66" width="66"></td>
+<td><img id="cell66" src="66.jpg" alt="66" height="66" width="66"></td>
+<td><img id="cell65" src="65.jpg" alt="65" height="66" width="66"></td>
+<td><img id="cell64" src="64.jpg" alt="64" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell55" src="55.jpg" alt="55" height="66" width="66"></td>
+<td><img id="cell56" src="56.jpg" alt="56" height="66" width="66"></td>
+<td><img id="cell57" src="57.jpg" alt="57" height="66" width="66"></td>
+<td><img id="cell58" src="58.jpg" alt="58" height="66" width="66"></td>
+<td><img id="cell59" src="59.jpg" alt="59" height="66" width="66"></td>
+<td><img id="cell60" src="60.jpg" alt="60" height="66" width="66"></td>
+<td><img id="cell61" src="61.jpg" alt="61" height="66" width="66"></td>
+<td><img id="cell62" src="62.jpg" alt="62" height="66" width="66"></td>
+<td><img id="cell63" src="63.jpg" alt="63" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell54" src="54.jpg" alt="54" height="66" width="66"></td>
+<td><img id="cell53" src="53.jpg" alt="53" height="66" width="66"></td>
+<td><img id="cell52" src="52.jpg" alt="52" height="66" width="66"></td>
+<td><img id="cell51" src="51.jpg" alt="51" height="66" width="66"></td>
+<td><img id="cell50" src="50.jpg" alt="50" height="66" width="66"></td>
+<td><img id="cell49" src="49.jpg" alt="49" height="66" width="66"></td>
+<td><img id="cell48" src="48.jpg" alt="48" height="66" width="66"></td>
+<td><img id="cell47" src="47.jpg" alt="47" height="66" width="66"></td>
+<td><img id="cell46" src="46.jpg" alt="46" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell37" src="37.jpg" alt="37" height="66" width="66"></td>
+<td><img id="cell38" src="38.jpg" alt="38" height="66" width="66"></td>
+<td><img id="cell39" src="39.jpg" alt="39" height="66" width="66"></td>
+<td><img id="cell40" src="40.jpg" alt="40" height="66" width="66"></td>
+<td><img id="cell41" src="41.jpg" alt="41" height="66" width="66"></td>
+<td><img id="cell42" src="42.jpg" alt="42" height="66" width="66"></td>
+<td><img id="cell43" src="43.jpg" alt="43" height="66" width="66"></td>
+<td><img id="cell44" src="44.jpg" alt="44" height="66" width="66"></td>
+<td><img id="cell45" src="45.jpg" alt="45" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell36" src="36.jpg" alt="36" height="66" width="66"></td>
+<td><img id="cell35" src="35.jpg" alt="35" height="66" width="66"></td>
+<td><img id="cell34" src="34.jpg" alt="34" height="66" width="66"></td>
+<td><img id="cell33" src="33.jpg" alt="33" height="66" width="66"></td>
+<td><img id="cell32" src="32.jpg" alt="32" height="66" width="66"></td>
+<td><img id="cell31" src="31.jpg" alt="31" height="66" width="66"></td>
+<td><img id="cell30" src="30.jpg" alt="30" height="66" width="66"></td>
+<td><img id="cell29" src="29.jpg" alt="29" height="66" width="66"></td>
+<td><img id="cell28" src="28.jpg" alt="28" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell19" src="19.jpg" alt="19" height="66" width="66"></td>
+<td><img id="cell20" src="20.jpg" alt="20" height="66" width="66"></td>
+<td><img id="cell21" src="21.jpg" alt="21" height="66" width="66"></td>
+<td><img id="cell22" src="22.jpg" alt="22" height="66" width="66"></td>
+<td><img id="cell23" src="23.jpg" alt="23" height="66" width="66"></td>
+<td><img id="cell24" src="24.jpg" alt="24" height="66" width="66"></td>
+<td><img id="cell25" src="25.jpg" alt="25" height="66" width="66"></td>
+<td><img id="cell26" src="26.jpg" alt="26" height="66" width="66"></td>
+<td><img id="cell27" src="27.jpg" alt="27" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell18" src="18.jpg" alt="18" height="66" width="66"></td>
+<td><img id="cell17" src="17.jpg" alt="17" height="66" width="66"></td>
+<td><img id="cell16" src="16.jpg" alt="16" height="66" width="66"></td>
+<td><img id="cell15" src="15.jpg" alt="15" height="66" width="66"></td>
+<td><img id="cell14" src="14.jpg" alt="14" height="66" width="66"></td>
+<td><img id="cell13" src="13.jpg" alt="13" height="66" width="66"></td>
+<td><img id="cell12" src="12.jpg" alt="12" height="66" width="66"></td>
+<td><img id="cell11" src="11.jpg" alt="11" height="66" width="66"></td>
+<td><img id="cell10" src="10.jpg" alt="10" height="66" width="66"></td>
+</tr>
+<tr>
+<td><img id="cell1" src="1.jpg" alt="1" height="66" width="66"></td>
+<td><img id="cell2" src="2.jpg" alt="2" height="66" width="66"></td>
+<td><img id="cell3" src="3.jpg" alt="3" height="66" width="66"></td>
+<td><img id="cell4" src="4.jpg" alt="4" height="66" width="66"></td>
+<td><img id="cell5" src="5.jpg" alt="5" height="66" width="66"></td>
+<td><img id="cell6" src="6.jpg" alt="6" height="66" width="66"></td>
+<td><img id="cell7" src="7.jpg" alt="7" height="66" width="66"></td>
+<td><img id="cell8" src="8.jpg" alt="8" height="66" width="66"></td>
+<td><img id="cell9" src="9.jpg" alt="9" height="66" width="66"></td>
+</tr>
+</table>
+</body>
+</html>
